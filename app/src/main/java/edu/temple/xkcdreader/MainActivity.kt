@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
+import android.content.Intent
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,7 +39,15 @@ class MainActivity : AppCompatActivity() {
                 fetchComic(comicNumberEditText.text.toString())
             }
         }
-
+        intent.action?.run{
+            if(this == Intent.ACTION_VIEW){
+                intent.data?.let{
+                    lifecycleScope.launch {
+                        fetchComic(intent.data?.path?.replace("/", "")!!)
+                    }
+                }
+            }
+        }
     }
 
     suspend fun fetchComic(comicId: String) {
